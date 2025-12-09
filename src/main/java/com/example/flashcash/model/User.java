@@ -5,7 +5,7 @@ import lombok.Data;
 
 import java.util.List;
 
-@Data
+@Data //getters + setters + toString + equals + hashCode + empty constructor
 @Entity
 public class User {
       @Id
