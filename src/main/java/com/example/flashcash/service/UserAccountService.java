@@ -23,20 +23,26 @@ public class UserAccountService {
             if (amount <= 0) { //Positive deposit amount check
                   throw new IllegalArgumentException("Deposit amount must be positive");
             }
-            UserAccount account = userAccountRepository.findById(accountId) //Account check
+            UserAccount userAccount = userAccountRepository.findById(ccountId) //Account check
                     .orElseThrow(() -> new RuntimeException("Account not found"));
 
-            account.plus(amount);
+            userAccount.plus(amount); //Account ou useraccount?
 
-            return userAccountRepository.save(account);
+            return userAccountRepository.save(userAccount);
             }
 
 
       }
 
-//      public UserAccount withdraw(Integer accountId, double amount) {
-//
-//      }
+      public UserAccount withdraw(Integer accountId, double amount) {
+
+      if (amount <= 0) {
+            throw new IllegalArgumentException("Withdraw amount must be positive");
+      }
+      UserAccount userAccount
+
+
+      }
 //
 //      public void transfer(Integer fromAccountId, Integer toAccountId, double amount){
 //
