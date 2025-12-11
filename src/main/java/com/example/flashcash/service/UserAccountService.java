@@ -18,7 +18,7 @@ public class UserAccountService {
       }
 
       private double totalFeesCollected = 0;
-      totalFeesCollected +=fee;
+
 
 
       //Methods
@@ -72,7 +72,7 @@ public class UserAccountService {
             UserAccount toAccount = userAccountRepository.findById(toAccountId)
                     .orElseThrow(() -> new RuntimeException("Destination account not found"));
 
-            // Treasury account that will collect the fees ///TODO Create treasury account
+
             Integer treasuryId = 1; // ID of treasury account
             UserAccount treasuryAccount = userAccountRepository.findById(treasuryId)
                     .orElseThrow(() -> new RuntimeException("Treasury account not found"));
@@ -87,6 +87,7 @@ public class UserAccountService {
             toAccount.plus(amount);           // receives only the amount
             treasuryAccount.plus(fee);        // collects the fee
 
+            totalFeesCollected += fee;
             userAccountRepository.save(fromAccount);
             userAccountRepository.save(toAccount);
             userAccountRepository.save(treasuryAccount);

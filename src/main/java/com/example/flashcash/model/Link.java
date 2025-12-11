@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class Link {
+public class Link { //Friends system
       @Id
       @GeneratedValue(strategy = GenerationType.IDENTITY)
       Integer id;
