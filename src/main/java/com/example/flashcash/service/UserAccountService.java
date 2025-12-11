@@ -17,6 +17,10 @@ public class UserAccountService {
             this.userAccountRepository = userAccountRepository;
       }
 
+      private double totalFeesCollected = 0;
+      totalFeesCollected +=fee;
+
+
       //Methods
       public UserAccount deposit(Integer accountId, double amount) {
 
@@ -55,9 +59,12 @@ public class UserAccountService {
                   throw new IllegalArgumentException("Transfer amount must be positive");
             }
 
-            if (fromAccountId.equals(toAccountId)) { //Not necessary but recommanded
+            if (fromAccountId.equals(toAccountId)) {
                   throw new IllegalArgumentException("Cannot transfer to the same account");
             }
+            // Fee logic: 0.5%
+            double fee = amount * 0.005; //because 0.5 = 50%
+            double totalDeducted = amount + fee;
 
             UserAccount fromAccount = userAccountRepository.findById(fromAccountId)
                     .orElseThrow(() -> new RuntimeException("Source account not found"));
@@ -65,16 +72,24 @@ public class UserAccountService {
             UserAccount toAccount = userAccountRepository.findById(toAccountId)
                     .orElseThrow(() -> new RuntimeException("Destination account not found"));
 
-            if (fromAccount.getAmount() < amount) {
-                  throw new IllegalArgumentException("Insufficient balance for transfer");
+            // Treasury account that will collect the fees ///TODO Create treasury account
+            Integer treasuryId = 1; // ID of treasury account
+            UserAccount treasuryAccount = userAccountRepository.findById(treasuryId)
+                    .orElseThrow(() -> new RuntimeException("Treasury account not found"));
+
+            // Check balance including fee
+            if (fromAccount.getAmount() < totalDeducted) {
+                  throw new IllegalArgumentException("Insufficient balance for transfer + fee");
             }
 
-            fromAccount.minus(amount);
-            toAccount.plus(amount);
+            // Apply transfer
+            fromAccount.minus(totalDeducted); // amount + fee
+            toAccount.plus(amount);           // receives only the amount
+            treasuryAccount.plus(fee);        // collects the fee
 
             userAccountRepository.save(fromAccount);
             userAccountRepository.save(toAccount);
+            userAccountRepository.save(treasuryAccount);
       }
-
 }
 
